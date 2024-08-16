@@ -19,6 +19,7 @@ int main(void)
     }
     return 0;
 }
+
 void korny(float a, float b, float c)
 { 
     float D = 0;
