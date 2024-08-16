@@ -8,13 +8,20 @@ int main(void)
     float a = 0.0;
     float b = 0.0;
     float c = 0.0;
-    scanf("%f %f %f", &a, &b, &c);
-    korny(a, b, c);
+
+    if (scanf("%f %f %f", &a, &b, &c) ==3)
+    {
+        korny(a, b, c);
+    }
+    else
+    {
+        printf("Ошибка: Не введены все коэффициенты");
+    }
     return 0;
 
 }
 void korny(float a, float b, float c)
-{
+{ 
     float D = 0;
     D = (pow(b, 2) - 4.0*a*c);
     if (a!=0)
