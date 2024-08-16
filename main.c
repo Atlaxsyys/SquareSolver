@@ -35,7 +35,7 @@ void korny(float a, float b, float c)
         }
         else if (D < 0 || b == 0)
         {
-        printf("Решений нет");
+            printf("Решений нет");
         }
     }
     else if (a == 0 && b == 0 && c == 0)
