@@ -1,28 +1,43 @@
 
 #include <stdio.h>
-double st(double base, int power);
+#include <math.h>
+void korny(float a, float b, float c);
 
-int main()
+int main(void)
 {
-    double base = 0;
-    int power = 0;
-    
-    scanf("%lf %d", &base, &power);
-    printf("%f", st(base, power));
+    float a = 0.0;
+    float b = 0.0;
+    float c = 0.0;
+    scanf("%f %f %f", &a, &b, &c);
+    korny(a, b, c);
+    return 0;
+
 }
-
-double st(double base, int power)
+void korny(float a, float b, float c)
 {
-    if (power == 0)
+    float D = 0;
+    D = (pow(b, 2) - 4.0*a*c);
+    if (a!=0)
     {
-        return 1;
-
-    else if (power % 2 == 1)
+        if (D == 0)
+        {
+            printf("x = %.2f", -b/(2.0*a));
+        }
+        else if (D>0)
+        {
+            printf("x1 = %.2f, x2 = %.2f", (-b + sqrt(D))/(2.0 * a), (-b - sqrt(D))/(2.0 * a));
+        }
+            else if (D<0 || b == 0)
+        {
+        printf("Решений нет");
+        }
+    }
+    else if (a == 0 && b == 0 && c == 0)
     {
-        return base * st(base, power - 1);
+        printf("x ∈ R");
     }
     else
     {
-        return st(base*base, power/2);
+        printf("x = %.2f", -c / b);
     }
 }
