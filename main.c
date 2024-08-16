@@ -9,7 +9,7 @@ int main(void)
     float b = 0.0;
     float c = 0.0;
 
-    if (scanf("%f %f %f", &a, &b, &c) ==3)
+    if (scanf("%f %f %f", &a, &b, &c) == 3)
     {
         korny(a, b, c);
     }
@@ -18,23 +18,22 @@ int main(void)
         printf("Ошибка: Не введены все коэффициенты");
     }
     return 0;
-
 }
 void korny(float a, float b, float c)
 { 
     float D = 0;
     D = (pow(b, 2) - 4.0*a*c);
-    if (a!=0)
+    if (a != 0)
     {
         if (D == 0)
         {
             printf("x = %.2f", -b/(2.0*a));
         }
-        else if (D>0)
+        else if (D > 0)
         {
             printf("x1 = %.2f, x2 = %.2f", (-b + sqrt(D))/(2.0 * a), (-b - sqrt(D))/(2.0 * a));
         }
-            else if (D<0 || b == 0)
+        else if (D < 0 || b == 0)
         {
         printf("Решений нет");
         }
