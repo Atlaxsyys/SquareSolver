@@ -11,7 +11,6 @@ void output(float root1, float root2, int roots);
 bool ravenstvo(float a, float b); 
 void input(float *coeff_a, float *coeff_b, float *coeff_c);
 
-const int inf_roots = -1;
 enum number_of_roots {inf = -1, zero, one, two};
 
 
