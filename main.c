@@ -4,6 +4,7 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <ctype.h>
+#include <assert.h>
 
 void clean_buffer(void);
 int square_solver(float coeff_a, float coeff_b, float coeff_c, float *root1, float *root2);
@@ -67,6 +68,9 @@ void input(float *coeff_a, float *coeff_b, float *coeff_c)
 
 int square_solver(float coeff_a, float coeff_b, float coeff_c, float *root1, float *root2)
 {
+    assert(root1 != NULL);
+    assert(root2 != NULL);
+    assert(root1 != root2);
     if (ravenstvo(coeff_a, 0))
     {
         if (ravenstvo(coeff_b, 0))
