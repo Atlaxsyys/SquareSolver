@@ -1,28 +1,65 @@
 
 #include <stdio.h>
 #include <math.h>
-#include <stdbool.h>
 #include <stdlib.h>
 #include <ctype.h>
 #include <assert.h>
+#include "solver_sq.h"
 
+void swap_if(float* a, float* b);
+void all_test(void);
+void swap(float* a, float* b);
+int testing(struct tests data);
 void clean_buffer(void);
-int square_solver(float coeff_a, float coeff_b, float coeff_c, float *root1, float *root2);
-void output(float root1, float root2, int roots);
-bool ravenstvo(float a, float b); 
+void output(float root1, float root2, int roots); 
 void input(float *coeff_a, float *coeff_b, float *coeff_c);
 
-enum number_of_roots {inf = -1, zero, one, two};
-
+struct tests
+{
+    int number_test;
+    float coeff_a, coeff_b, coeff_c;
+    float root1_exp, root2_exp;
+    int nroots_expected;
+};
 
 int main(void)
 {
+    struct tests test1 = {
+        .number_test = 1,
+        .coeff_a = 1, .coeff_b = 7, .coeff_c = 6,
+        .root1_exp = -6, .root2_exp = -1, .nroots_expected = 2
+    };
+    struct tests test2 = {
+        .number_test = 2,
+        .coeff_a = 1, .coeff_b = 2, .coeff_c = 1,
+        .root1_exp = -1, .root2_exp = -1, .nroots_expected = 1
+    };
+    struct tests test3 = {
+        .number_test = 3,
+        .coeff_a = 0, .coeff_b = 1, .coeff_c = 1,
+        .root1_exp = -1, .root2_exp = -1, .nroots_expected = 1
+    };
+    struct tests test4 = {
+        .number_test = 4,
+        .coeff_a = 0, .coeff_b = 0, .coeff_c = 0,
+        .root1_exp = 0, .root2_exp = 0, .nroots_expected = -1
+    };
+    struct tests test5 = {
+        .number_test = 5,
+        .coeff_a = 0, .coeff_b = 0, .coeff_c = 5,
+        .root1_exp = 0, .root2_exp = 0, .nroots_expected = 0
+    };
+    struct tests test6 = {
+        .number_test = 6,
+        .coeff_a = 1, .coeff_b = 2, .coeff_c = 3,
+        .root1_exp = 0, .root2_exp = 0, .nroots_expected = 0
+    };
+
     float coeff_a = 0;
     float coeff_b = 0;
     float coeff_c = 0;
     float root1 = 0;
     float root2 = 0;
-
     input(&coeff_a, &coeff_b, &coeff_c);
     int roots = square_solver(coeff_a, coeff_b, coeff_c, &root1, &root2);
     output(root1, root2, roots);
@@ -37,6 +74,9 @@ void clean_buffer(void)
 
 void input(float *coeff_a, float *coeff_b, float *coeff_c)
 {
+    assert(coeff_a != NULL);
+    assert(coeff_b != NULL);
+    assert(coeff_c != NULL); 
     printf("Enter the coefficients of the quadratic equation a  b  c accordingly\n");
     do 
     {
@@ -66,47 +106,6 @@ void input(float *coeff_a, float *coeff_b, float *coeff_c)
     } while (true);
 }
 
-int square_solver(float coeff_a, float coeff_b, float coeff_c, float *root1, float *root2)
-{
-    assert(root1 != NULL);
-    assert(root2 != NULL);
-    assert(root1 != root2);
-    if (ravenstvo(coeff_a, 0))
-    {
-        if (ravenstvo(coeff_b, 0))
-        {
-            return (coeff_c == 0) ? inf : zero;
-        }
-        else if (!ravenstvo(coeff_b, 0))
-        {
-            *root1 = -coeff_c / coeff_b;
-            *root2 = *root1;
-            return one;
-        }
-    }
-
-    float discriminant = (coeff_b * coeff_b - 4 * coeff_a * coeff_c);
-    if (!ravenstvo(coeff_a, 0))
-    {
-        if (ravenstvo(discriminant, 0))
-        {
-            *root1 = -coeff_b / (2 * coeff_a);
-            *root2 = *root1;
-            return one;
-        }
-        else if (discriminant > 0)
-        {
-            float sqrt_of_discriminant = sqrtf(discriminant);
-            *root1 = (-coeff_b - sqrt_of_discriminant)/(2 * coeff_a);
-            *root2 = (-coeff_b + sqrt_of_discriminant)/(2 * coeff_a);
-            return two;
-        }
-        else if (discriminant < 0)
-        {
-            return zero;
-        }
-    }
-}
 void output(float root1, float root2, enum number_of_roots roots)
 {
     switch(roots)
@@ -128,8 +127,67 @@ void output(float root1, float root2, enum number_of_roots roots)
     }
 }   
 
-bool ravenstvo(float a, float b)
+int testing(struct tests data)
 {
-    double eps = 1e-7;
-    return fabs(a-b) < eps;
+    float root = 0;
+    float root1 = 0;
+    float root2 = 0;
+    int nRoots = square_solver(data.coeff_a, data.coeff_b, data.coeff_c, &root1, &root2);
+
+    swap_if(&root1, &root2);
+    swap_if(&data.root1_exp, &data.root2_exp);
+    if (ravenstvo(root1, root2))
+    {
+        root = root1;
+        double rootexpected = data.root1_exp;
+        if (!ravenstvo(nRoots, data.nroots_expected) || !ravenstvo(root, rootexpected))
+        {
+            printf("Error test %d: a = %f, b = %f, c = %f, root = %f nRoots = %d\n"
+            "Expected: root = %f nRoots = %f\n",
+            data.number_test, data.coeff_a, data.coeff_b, data.coeff_c, root, nRoots,
+            rootexpected, data.nroots_expected);
+            return 1;
+        }
+    }
+    else if (nRoots != data.nroots_expected || !ravenstvo(root1, data.root1_exp) || !ravenstvo(root2, data.root2_exp))
+    {
+        printf("Error test: %d: a = %f, b = %f, c = %f, root1 = %f, root2 = %f, nRoots = %f"
+        "Expected: root1 = %f, root2 = %f nRoots = %f",
+        data.coeff_a, data.coeff_b, data.coeff_c, root1, root2, nRoots,
+        data.root1_exp, data.root2_exp, data.nroots_expected);
+        return 1;
+    }
+    else
+    {
+        return 0;
+    }
 }
+
+void swap(float* a, float* b)
+{   
+    float temp = 0;
+    temp = *a;
+    *b = *a;
+}
+
+void swap_if(float* a, float* b)
+{
+    if (*a > *b)
+    {
+        swap(a, b);
+    }
+}
+
+int all_tests(struct tests test1, struct tests test2, struct tests test3, struct tests test4, struct tests test5, struct tests test6)
+{
+    int failed = 0;
+    failed += testing(test1);
+    failed += testing(test2);
+    failed += testing(test3);
+    failed += testing(test4);
+    failed += testing(test5);
+    failed += testing(test6);
+    return failed;
+}
+// разбивка на файлы
+// структуры
