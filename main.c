@@ -6,14 +6,6 @@
 #include <assert.h>
 #include "solver_sq.h"
 
-void swap_if(float* a, float* b);
-void all_test(void);
-void swap(float* a, float* b);
-int testing(struct tests data);
-void clean_buffer(void);
-void output(float root1, float root2, int roots); 
-void input(float *coeff_a, float *coeff_b, float *coeff_c);
-
 struct tests
 {
     int number_test;
@@ -22,44 +14,23 @@ struct tests
     int nroots_expected;
 };
 
+void swap_if(float* a, float* b);
+void all_test(void);
+void swap(float* a, float* b);
+int testing(struct tests data);
+void clean_buffer(void);
+void output(float root1, float root2, int roots); 
+void input(float *coeff_a, float *coeff_b, float *coeff_c);
+
+
 int main(void)
 {
-    struct tests test1 = {
-        .number_test = 1,
-        .coeff_a = 1, .coeff_b = 7, .coeff_c = 6,
-        .root1_exp = -6, .root2_exp = -1, .nroots_expected = 2
-    };
-    struct tests test2 = {
-        .number_test = 2,
-        .coeff_a = 1, .coeff_b = 2, .coeff_c = 1,
-        .root1_exp = -1, .root2_exp = -1, .nroots_expected = 1
-    };
-    struct tests test3 = {
-        .number_test = 3,
-        .coeff_a = 0, .coeff_b = 1, .coeff_c = 1,
-        .root1_exp = -1, .root2_exp = -1, .nroots_expected = 1
-    };
-    struct tests test4 = {
-        .number_test = 4,
-        .coeff_a = 0, .coeff_b = 0, .coeff_c = 0,
-        .root1_exp = 0, .root2_exp = 0, .nroots_expected = -1
-    };
-    struct tests test5 = {
-        .number_test = 5,
-        .coeff_a = 0, .coeff_b = 0, .coeff_c = 5,
-        .root1_exp = 0, .root2_exp = 0, .nroots_expected = 0
-    };
-    struct tests test6 = {
-        .number_test = 6,
-        .coeff_a = 1, .coeff_b = 2, .coeff_c = 3,
-        .root1_exp = 0, .root2_exp = 0, .nroots_expected = 0
-    };
-
     float coeff_a = 0;
     float coeff_b = 0;
     float coeff_c = 0;
     float root1 = 0;
     float root2 = 0;
+
     input(&coeff_a, &coeff_b, &coeff_c);
     int roots = square_solver(coeff_a, coeff_b, coeff_c, &root1, &root2);
     output(root1, root2, roots);
@@ -178,16 +149,41 @@ void swap_if(float* a, float* b)
     }
 }
 
-int all_tests(struct tests test1, struct tests test2, struct tests test3, struct tests test4, struct tests test5, struct tests test6)
+int all_tests(void)
 {
+    struct tests test[6] = {
+        {.number_test = 1,
+        .coeff_a = 1, .coeff_b = 7, .coeff_c = 6,
+        .root1_exp = -6, .root2_exp = -1, .nroots_expected = 2
+    },
+        {.number_test = 2,
+        .coeff_a = 1, .coeff_b = 2, .coeff_c = 1,
+        .root1_exp = -1, .root2_exp = -1, .nroots_expected = 1
+    },
+        {.number_test = 3,
+        .coeff_a = 0, .coeff_b = 1, .coeff_c = 1,
+        .root1_exp = -1, .root2_exp = -1, .nroots_expected = 1
+    },
+        {.number_test = 4,
+        .coeff_a = 0, .coeff_b = 0, .coeff_c = 0,
+        .root1_exp = 0, .root2_exp = 0, .nroots_expected = -1
+    },
+        {.number_test = 5,
+        .coeff_a = 0, .coeff_b = 0, .coeff_c = 5,
+        .root1_exp = 0, .root2_exp = 0, .nroots_expected = 0
+    },
+        {.number_test = 6,
+        .coeff_a = 1, .coeff_b = 2, .coeff_c = 3,
+        .root1_exp = 0, .root2_exp = 0, .nroots_expected = 0
+    }
+    };
+    
     int failed = 0;
-    failed += testing(test1);
-    failed += testing(test2);
-    failed += testing(test3);
-    failed += testing(test4);
-    failed += testing(test5);
-    failed += testing(test6);
+    failed += testing(test[0]);
+    failed += testing(test[1]);
+    failed += testing(test[2]);
+    failed += testing(test[3]);
+    failed += testing(test[4]);
+    failed += testing(test[5]);
     return failed;
 }
-// разбивка на файлы
-// структуры
