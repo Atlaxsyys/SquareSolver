@@ -19,7 +19,7 @@ void all_test(void);
 void swap(float* a, float* b);
 int testing(struct tests data);
 void clean_buffer(void);
-void output(float root1, float root2, int roots); 
+void output(float root1, float root2, enum number_of_roots roots); 
 void input(float *coeff_a, float *coeff_b, float *coeff_c);
 
 
@@ -100,7 +100,6 @@ void output(float root1, float root2, enum number_of_roots roots)
 
 int testing(struct tests data)
 {
-    float root = 0;
     float root1 = 0;
     float root2 = 0;
     int nRoots = square_solver(data.coeff_a, data.coeff_b, data.coeff_c, &root1, &root2);
@@ -109,13 +108,13 @@ int testing(struct tests data)
     swap_if(&data.root1_exp, &data.root2_exp);
     if (ravenstvo(root1, root2))
     {
-        root = root1;
+        root1 = root2;
         double rootexpected = data.root1_exp;
-        if (!ravenstvo(nRoots, data.nroots_expected) || !ravenstvo(root, rootexpected))
+        if (!ravenstvo(nRoots, data.nroots_expected) || !ravenstvo(root1, rootexpected))
         {
             printf("Error test %d: a = %f, b = %f, c = %f, root = %f nRoots = %d\n"
-            "Expected: root = %f nRoots = %f\n",
-            data.number_test, data.coeff_a, data.coeff_b, data.coeff_c, root, nRoots,
+            "Expected: root = %f nRoots = %d\n",
+            data.number_test, data.coeff_a, data.coeff_b, data.coeff_c, root1, nRoots,
             rootexpected, data.nroots_expected);
             return 1;
         }
@@ -123,7 +122,7 @@ int testing(struct tests data)
     else if (nRoots != data.nroots_expected || !ravenstvo(root1, data.root1_exp) || !ravenstvo(root2, data.root2_exp))
     {
         printf("Error test: %d: a = %f, b = %f, c = %f, root1 = %f, root2 = %f, nRoots = %f"
-        "Expected: root1 = %f, root2 = %f nRoots = %f",
+        "Expected: root1 = %f, root2 = %f nRoots = %d",
         data.coeff_a, data.coeff_b, data.coeff_c, root1, root2, nRoots,
         data.root1_exp, data.root2_exp, data.nroots_expected);
         return 1;
@@ -138,7 +137,9 @@ void swap(float* a, float* b)
 {   
     float temp = 0;
     temp = *a;
-    *b = *a;
+    *a = *b;
+    *b = temp;
+
 }
 
 void swap_if(float* a, float* b)
@@ -177,13 +178,12 @@ int all_tests(void)
         .root1_exp = 0, .root2_exp = 0, .nroots_expected = 0
     }
     };
-    
+
     int failed = 0;
-    failed += testing(test[0]);
-    failed += testing(test[1]);
-    failed += testing(test[2]);
-    failed += testing(test[3]);
-    failed += testing(test[4]);
-    failed += testing(test[5]);
+    int number_of_elements = sizeof(test) / sizeof(test[0]);
+    for (int i = 0; number_of_elements > i; i++)
+    {
+    failed += testing(test[i]);
+    }
     return failed;
 }
